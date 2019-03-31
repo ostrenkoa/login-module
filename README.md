@@ -24,6 +24,7 @@
 
 - goDB - для более удобной работы с базой [https://github.com/vasa-c/go-db](https://github.com/vasa-c/go-db)
 - PHPMailer - для отправки писем [https://github.com/PHPMailer/PHPMailer](https://github.com/PHPMailer/PHPMailer)
+Необходимые файлы включены в проект.
 
 ## Установка
 
@@ -37,6 +38,7 @@
 
 Распространяется под лицензией [MIT](http://www.opensource.org/licenses/mit-license.php).
 Вы можете использовать этот скрипт бесплатно для любых личных или коммерческих проектов.
+Используемые библиотеки goDB и PHPMailer лицензируются отдельно.
 
 ## Поддержка
 
