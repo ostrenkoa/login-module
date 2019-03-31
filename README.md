@@ -22,9 +22,9 @@
 
 ## Зависимости
 
+Необходимые файлы включены в проект.
 - goDB - для более удобной работы с базой [https://github.com/vasa-c/go-db](https://github.com/vasa-c/go-db)
 - PHPMailer - для отправки писем [https://github.com/PHPMailer/PHPMailer](https://github.com/PHPMailer/PHPMailer)
-Необходимые файлы включены в проект.
 
 ## Установка
 
