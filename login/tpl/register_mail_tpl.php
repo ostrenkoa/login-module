@@ -5,7 +5,7 @@
 //
 // ******************************************** //
 
-$subject = 'Регистрация на сайте '.$config['site_name'],
+$subject = 'Регистрация на сайте '.$config['site_name'];
 
 $body = '
 <!DOCTYPE html>

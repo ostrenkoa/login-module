@@ -336,7 +336,7 @@ if (isset($page))
 	// ####################################################
 
 	// сервисный режим системы
-	else if ($result == "service_mode")
+	else if ($result == "system_offline")
 	{
 		$title = $langpack['service_mode_form_title'];
 		$keywords = "";
