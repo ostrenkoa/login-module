@@ -61,7 +61,7 @@ if (!$user_login)
 						FROM
 							users
 						WHERE
-							user_email = ?
+							users.user_email = ?
 						LIMIT
 							1
 					';

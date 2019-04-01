@@ -71,9 +71,9 @@ if (
 				FROM
 					users
 				WHERE
-					user_activation_code = ?
+					users.user_activation_code = ?
 				AND
-					user_email = ?
+					users.user_email = ?
 				LIMIT
 					1
 			';
@@ -92,11 +92,11 @@ if (
 						UPDATE
 							users
 						SET
-							user_activation_state = 1
+							users.user_activation_state = 1
 						WHERE
-							user_activation_code = ?
+							users.user_activation_code = ?
 						AND
-							user_email = ?
+							users.user_email = ?
 						LIMIT
 							1
 						';

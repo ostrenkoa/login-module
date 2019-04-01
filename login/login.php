@@ -80,7 +80,7 @@ if (!$user_login)
 					FROM
 						users
 					WHERE
-						user_email = ?
+						users.user_email = ?
 					LIMIT
 						1
 				';
@@ -138,9 +138,9 @@ if (!$user_login)
 										UPDATE
 											users
 										SET
-											user_hash = ?
+											users.user_hash = ?
 										WHERE
-											user_id = ?i
+											users.user_id = ?i
 										LIMIT
 											1
 									';

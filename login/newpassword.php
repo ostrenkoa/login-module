@@ -74,7 +74,7 @@ if (!$user_login)
 				FROM
 					users
 				WHERE
-					user_email = ?
+					users.user_email = ?
 				LIMIT
 					1
 			';
@@ -98,11 +98,11 @@ if (!$user_login)
 						UPDATE
 							users
 						SET
-							user_password = ?
+							users.user_password = ?
 						WHERE
-							user_email = ?
+							users.user_email = ?
 						AND
-							user_id = ?i
+							users.user_id = ?i
 						LIMIT
 							1
 						';

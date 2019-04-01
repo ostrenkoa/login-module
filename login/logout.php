@@ -25,9 +25,9 @@ if ($user_login)
 		UPDATE
 			users
 		SET
-			user_hash = 0
+			users.user_hash = 0
 		WHERE
-			user_id = ?i
+			users.user_id = ?i
 		LIMIT
 			1
 		';

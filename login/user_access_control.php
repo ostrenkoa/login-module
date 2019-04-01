@@ -23,9 +23,9 @@ if (isset($page))
 			FROM
 				users
 			WHERE
-				user_id = ?i
+				users.user_id = ?i
 			AND
-				user_hash = ?
+				users.user_hash = ?
 			LIMIT
 				1
 		';
