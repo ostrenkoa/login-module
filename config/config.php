@@ -65,7 +65,7 @@ $config = array(
 'user_email_passwordreset'		=> false,
 
 // адрес сайта для подключения скриптов и стилей в html
-'base_site_url'					=> 'http://login.local',
+'base_site_url'					=> 'http://localhost',
 
 // название сайта, для использования в текстах и письмах
 'site_name'						=> 'YourSite',
@@ -107,15 +107,15 @@ $mailconfig = array(
 
 // адрес smtp сервера
 //'smtphost'				=> 'smtp.yandex.ru',
-'smtphost'					=> 'smtp.yandex.ru',
+'smtphost'					=> '',
 
 // порт smtp сервера
 //'smtpport'				=> '465',
-'smtpport'					=> '465',
+'smtpport'					=> '',
 
 // тип шифрования smtp сервера
 //'smtpsecure'				=> 'ssl',
-'smtpsecure'				=> 'ssl',
+'smtpsecure'				=> '',
 
 // авторизация smtp сервера
 //'smtpauth'				=> true,
@@ -123,19 +123,19 @@ $mailconfig = array(
 
 // адрес почты smtp сервера
 //'smtpmail'				=> 'robot@yoursite.com',
-'smtpmail'					=> 'robot@yoursite.com',
+'smtpmail'					=> '',
 
 // логин smtp сервера
 //'smtpusername'			=> 'robot@yoursite.com',
-'smtpusername'				=> 'robot@yoursite.com',
+'smtpusername'				=> '',
 
 // пароль smtp сервера
 //'smtppassword'			=> 'YoUrPaSSword',
-'smtppassword'				=> 'YoUrPaSSword',
+'smtppassword'				=> '',
 
 // название отправителя для писем
 //'smtpfrom'				=> 'YourSiteName',
-'smtpfrom'					=> 'YourSiteName',
+'smtpfrom'					=> '',
 );
 
 ?>
