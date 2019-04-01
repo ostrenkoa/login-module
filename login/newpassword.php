@@ -87,9 +87,9 @@ if (!$user_login)
 			{
 				// генерируем правильный код восстановления пароля по текущим данным из базы
 				// id + хэш прошлого пароля + соль + email
-				$goodpasswordreset_code = hash('sha512', $user['user_id'].$user['user_password'].$config['salt'].$user['user_email']);
+				$goodpasswordreset_code = hash('sha256', $user['user_id'].$user['user_password'].$config['salt'].$user['user_email']);
 				// сравниваем полученный код восстановления с правильным
-				if ($goodpasswordreset_code === $_POST['passwordreset_code'])
+				if ($goodpasswordreset_code == $_POST['passwordreset_code'])
 				// если код восстановления совпадает, записываем в базу новый пароль
 				{	
 					// шифруем пароль с солью
@@ -118,6 +118,7 @@ if (!$user_login)
 					// код ответа - код не совпадает
 					$result = 'newpassword_code_wrong';
 				}
+			}
 			else
 			// если учётки с таким e-mail нет в базе
 			{
@@ -144,5 +145,11 @@ if (!$user_login)
 	
 	// подключаем вёрстку для сборки ответа
 	include $config['base_include_url'].'/login/tpl/login_tpl.php';
+}
+else
+// если пользователь уже залогинен - перебрасываем на основную страницу
+{
+	header ('Location: /'.$config['system_page']);
+	exit();
 }
 ?>

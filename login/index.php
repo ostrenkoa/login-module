@@ -1,6 +1,6 @@
 <?php
 
-header ('Location: /login.php');
+header ('Location: /login/login.php');
 exit();
 
 ?>

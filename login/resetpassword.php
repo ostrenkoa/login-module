@@ -30,7 +30,7 @@ if (!$user_login)
 		{
 			// задаём свойства формы
 			$form = '1';								// фома активна
-			$form_action = 'passwordreset.php';			// адрес отправки формы
+			$form_action = 'resetpassword.php';			// адрес отправки формы
 			$form_method = 'POST';						// метод отправки формы
 			$input_email = '1';							// поле e-mail
 			$btn = '1';									// кнопка
@@ -68,13 +68,13 @@ if (!$user_login)
 					$value = array($_POST['email']);
 					$user = $db->query($pattern, $value)->row();
 						
-					if(!empty($data))
+					if(!empty($user))
 					// если есть учётка с таким e-mail
 					{
 						// генерируем код восстановления пароля
 						// id + хэш прошлого пароля + соль + email
 						// из-за использования хэша прошлого пароля, ссылка будет действительна только на одну смену пароля
-						$passwordreset_code = hash('sha512', $user['user_id'].$user['user_password'].$config['salt'].$user['user_email']);
+						$passwordreset_code = hash('sha256', $user['user_id'].$user['user_password'].$config['salt'].$user['user_email']);
 						
 						// генерируем письмо с кодом сброса
 						// кому отправляем письмо
