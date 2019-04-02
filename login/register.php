@@ -17,6 +17,19 @@ require_once ($g_root.'/config.php');
 // вызываем файл аутентификации пользователя
 include_once ($config['base_include_url'].$config['url_UAC_file']);
 
+// функция генерации индивидуального реферального кода из непохожих символов
+function generateCode($length=8)
+{
+	$chars = 'abcdefghikmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+	$code = '';
+	$clen = strlen($chars) - 1;
+	while (strlen($code) < $length)
+	{
+		$code .= $chars[mt_rand(0,$clen)];
+	}
+	return $code;
+}
+
 if (!$user_login) {
 	// если пользователь не залогинен
 
@@ -27,13 +40,11 @@ if (!$user_login) {
 			// если форма не отправлялась - показываем форму
 
 			// задаём свойства формы для сборки из шаблона
-			// реферальная ссылка и код приглашения, если были получены
-			(!empty($_GET['ref']))		? $refregcode 	= $_GET['ref']		: '';
-			(!empty($_GET['invite']))	? $invitecode 	= $_GET['invite']	: '';
-
 			$form					= true;				// фома активна
 			$form_action			= 'register.php';	// адрес отправки формы
 			$form_method			= 'POST';			// метод отправки формы
+			$refregcode		=  $_GET['ref'] ?: '';		// реферальная ссылка
+			$invitecode		=  $_GET['invite'] ?: '';	// код приглашения
 			$input_email			= true;				// поле e-mail
 			$input_password			= true;				// поле пароль
 			$input_terms_checkbox	= true;				// чекбокс с соглашением
@@ -54,16 +65,11 @@ if (!$user_login) {
 		} else {
 			// если форма отправлялась - обрабатываем данные
 
-			if (!empty($_POST['email']) AND !empty($_POST['password'])) {
+			if ($_POST['email'] AND !empty($_POST['password'])) {
 				// если данных достаточно
-
-				// реферальная ссылка и код приглашения, если были получены
-				(!empty($_POST['refcode']))	? $refcode 	= $_POST['refcode']		: '';
-				(!empty($_POST['invite']))	? $invitecode 	= $_POST['invite']	: '';
 
 				if (preg_match($config['regex_email'], $_POST['email'])) {
 					// если e-mail проходит проверку по маске
-
 
 					if ($config['new_registration_only_invite']) {
 						// если открыта регистрация только по инвайтам
@@ -114,18 +120,7 @@ if (!$user_login) {
 							// генерируем код активации аккаунта
 							$activation_code = hash('sha256', $_POST['email'].time());
 							
-							// генерируем индивидуальный реферальный код из непохожих символов
-							function generateCode($length=8)
-							{
-								$chars = 'abcdefghikmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-								$code = '';
-								$clen = strlen($chars) - 1;
-								while (strlen($code) < $length)
-								{
-									$code .= $chars[mt_rand(0,$clen)];
-								}
-								return $code;
-							}
+							// генерируем индивидуальный реферальный код
 							$refcode = generateCode(8);
 							
 							// шифруем пароль с солью
@@ -141,11 +136,9 @@ if (!$user_login) {
 								'user_regdate'			=> date("Y-m-d H:i:s"),
 								);
 
-							// если зарегистрировались по реферальной ссылке
-							($refregcode)	? $set['user_refreg_code'] = $refregcode : '';
+							$set['user_refreg_code']	=  $_POST['refregcode'] ?: '';	// если зарегистрировались по реферальной ссылке
 
-							// если активация по почте не требуется
-							(!$config['user_email_activation'])	? $set['user_activation_state'] = 1 : '';
+							(!$config['user_email_activation'])	? $set['user_activation_state'] = 1 : ''; // если активация по почте не требуется
 
 							$pattern = '
 								INSERT INTO
@@ -184,10 +177,10 @@ if (!$user_login) {
 								$to = $_POST['email'];
 
 								// подключаем шаблон письма
-								include 'tpl/register_mail_tpl.php';
+								require_once 'tpl/register_mail_tpl.php';
 
 								// подключаем функцию отправки писем
-								include 'mailsend.php';
+								require_once 'mailsend.php';
 
 								// отправляем письмо с кодом активации
 								Send_Mail ($to, $subject, $body);

@@ -36,18 +36,11 @@ if (!$user_login OR !$userconfig['user_activation_state']) {
 
 	} else {
 		// если данные из формы либо ссылки активации получены - обрабатываем данные
-	
-		// получаем e-mail и код активации
-		(!empty($_GET['email']))			? $email 					= $_GET['email']			: '';
-		(!empty($_GET['activation_code']))	? $user_activation_code 	= $_GET['activation_code']	: '';
 			
 		// проверяем e-mail и код активации по маске
 		$regex_code = '/^[a-fA-F0-9]{64,64}$/';
 
-		if(
-				(preg_match($regex_code, $user_activation_code))
-			AND (preg_match($config['regex_email'], $email))
-		) {
+		if((preg_match($regex_code, $_GET['activation_code']))	AND (preg_match($config['regex_email'], $_GET['email']))) {
 			// если они проходят проверку
 		
 			// делаем поиск записи с такими данными в базе
@@ -63,7 +56,7 @@ if (!$user_login OR !$userconfig['user_activation_state']) {
 				LIMIT
 					1
 			';
-			$value = array($user_activation_code, $email);
+			$value = array($_GET['activation_code'], $_GET['email']);
 			$user = $db->query($pattern, $value)->row();
 			
 			if (!empty($user)) {
@@ -85,7 +78,7 @@ if (!$user_login OR !$userconfig['user_activation_state']) {
 						LIMIT
 							1
 						';
-					$value = array($user_activation_code, $email);
+					$value = array($_GET['activation_code'], $_GET['email']);
 					$activation = $db->query($pattern, $value);
 					
 					$result = 'activation_true';	// код ответа - активация успешно произведена

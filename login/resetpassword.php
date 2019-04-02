@@ -23,7 +23,7 @@ if (!$user_login) {
 	if ($config['user_email_passwordreset']) {
 		// если возможность сброса пароля через почту активна
 	
-		if (!isset($_POST['submit'])) {
+		if (empty($_POST)) {
 			// если форма не отправлялась - показываем форму
 
 			// задаём свойства формы
@@ -33,12 +33,12 @@ if (!$user_login) {
 			$input_email	= true;						// поле e-mail
 			$btn			= true;						// кнопка
 			
-			$result = 'passwordreset_form';	// код ответа - форма сброса пароля
+			$result = 'passwordreset_form';		// код ответа - форма сброса пароля
 
 		} else {
 			// если форма отправлялась
 		
-			if (!empty($_POST['email'])) {
+			if ($_POST['email']) {
 				// если данных достаточно
 
 				if (preg_match($config['regex_email'], $_POST['email'])) {
@@ -73,10 +73,10 @@ if (!$user_login) {
 						$to = $user['user_email'];
 
 						// подключаем шаблон письма
-						include 'tpl/passwordreset_mail_tpl.php';
+						require_once 'tpl/passwordreset_mail_tpl.php';
 
 						// подключаем функцию отправки писем
-						include 'mailsend.php';
+						require_once 'mailsend.php';
 
 						// отправляем письмо с кодом сброса
 						Send_Mail ($to, $subject, $body);

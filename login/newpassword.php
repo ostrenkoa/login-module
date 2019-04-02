@@ -25,18 +25,13 @@ if (!$user_login) {
 		// если был переход по ссылке - показываем форму
 
 		// задаём свойства формы для сборки из шаблона
-		// забираем e-mail и код сброса из ссылки
-		(!empty($_GET['email']))				? $hidden_email 				= $_GET['email']				: '';
-		(!empty($_GET['passwordreset_code']))	? $hidden_passwordreset_code 	= $_GET['passwordreset_code']	: '';
-
-		// задаём свойства формы
-		$form								= true;					// фома активна
-		$form_action						= 'newpassword.php';	// адрес отправки формы
-		$form_method						= 'POST';				// метод отправки формы
-		$input_hidden_passwordreset_code	= true;					// скрытое поле с кодом сброса пароля
-		$input_hidden_email					= true;					// скрытое поле с адресом e-mail
-		$input_password						= true;					// поле пароль
-		$btn								= true;					// кнопка
+		$form								= true;								// фома активна
+		$form_action						= 'newpassword.php';				// адрес отправки формы
+		$form_method						= 'POST';							// метод отправки формы
+		$hidden_email				=  $_GET['email'] 				?: '';		// e-mail из ссылки
+		$hidden_passwordreset_code	=  $_GET['passwordreset_code']	?: '';		// код сброса из ссылки
+		$input_password						= true;								// поле пароль
+		$btn								= true;								// кнопка
 		
 		// код ответа - форма установки нового пароля
 		$result = 'newpassword_form';
@@ -47,10 +42,7 @@ if (!$user_login) {
 		// проверяем e-mail и код сброса по маске
 		$regex_code = '/^[a-fA-F0-9]{64,64}$/';
 
-		if (
-				(preg_match($regex_code, $_POST['passwordreset_code']))
-			AND (preg_match($config['regex_email'], $_POST['email']))
-		) {
+		if ((preg_match($regex_code, $_POST['passwordreset_code'])) AND (preg_match($config['regex_email'], $_POST['email']))) {
 			// если они проходят проверку
 
 			// делаем поиск записи с такими данными в базе

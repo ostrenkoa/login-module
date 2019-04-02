@@ -17,6 +17,18 @@ require_once ($g_root.'/config.php');
 // вызываем файл аутентификации пользователя
 include_once ($config['base_include_url'].$config['url_UAC_file']);
 
+// функция генерации хэша
+function generateCode($length = 10) {
+	$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
+	$code = "";
+	$clen = strlen($chars) - 1;
+	while (strlen($code) < $length)
+	{
+		$code .= $chars[mt_rand(0,$clen)];
+	}
+	return $code;
+}
+
 if (!$user_login) {
 	// если пользователь сейчас не залогинен
 
@@ -24,16 +36,14 @@ if (!$user_login) {
 		// если форма логина не отправлялась либо вернулась с GET ошибкой - показываем форму
 
 		// задаём свойства формы для сборки из шаблона
-		// если это повторная попытка входа, забираем ранее введённый e-mail и тип ошибки
-		(!empty($_GET['login'])) ? $input_email_value 	= $_GET['login'] : '';
-		(!empty($_GET['error'])) ? $error 				= $_GET['error'] : '';
-
-		$form 			= true;						// форма активна
-		$form_action 	= 'login.php';				// адрес отправки формы
-		$form_method 	= 'POST';					// метод отправки формы
-		$input_email 	= true;						// поле e-mail
-		$input_password = true;						// поле пароль
-		$btn 			= true;						// кнопка
+		$input_email_value	=  $_GET['login'] ?: '';	// ранее введённый e-mail
+		$error				=  $_GET['error'] ?: '';	// тип ошибки
+		$form 				= true;						// форма активна
+		$form_action 		= 'login.php';				// адрес отправки формы
+		$form_method 		= 'POST';					// метод отправки формы
+		$input_email 		= true;						// поле e-mail
+		$input_password 	= true;						// поле пароль
+		$btn 				= true;						// кнопка
 		
 		// код ответа для сборки - форма авторизации
 		$result = 'login_form';
@@ -41,7 +51,7 @@ if (!$user_login) {
 	} else {
 		// если форма отправлялась - получаем и обрабатываем данные
 
-		if (!empty($_POST['email']) AND !empty($_POST['password'])) {
+		if ($_POST['email'] AND !empty($_POST['password'])) {
 			// если данных хватает
 
 			if (preg_match($config['regex_email'], $_POST['email'])) {
@@ -73,29 +83,13 @@ if (!$user_login) {
 						if ((int)$user['user_state'] === 1) {
 							// если пользователь не заблокирован (поле "user_state" в базе)
 
-							if ((	$config['system_state']
-								AND (int)$user['user_admin'] !== 1
-								)
-								OR (int)$user['user_admin'] === 1
-							) {
+							if ($config['system_state'] OR (int)$user['user_admin'] === 1) {
 								// если система не в сервисном режиме или это администратор
 
 								if ((int)$user['user_activation_state'] === 1) {
 									// если пользователь уже активирован
 
-									// генерируем случайное число для хэша
-									function generateCode($length = 10) {
-										$chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPRQSTUVWXYZ0123456789";
-										$code = "";
-										$clen = strlen($chars) - 1;
-										while (strlen($code) < $length)
-										{
-											$code .= $chars[mt_rand(0,$clen)];
-										}
-										return $code;
-									}
-
-									// шифруем его в хеш для записи в куки
+									// генерируем хещ шифруем его для записи в куки
 									$cookiehash = md5(generateCode(10));
 
 									// шифруем полученный хеш с солью для записи в базу
@@ -113,7 +107,7 @@ if (!$user_login) {
 											1
 									';
 									$value = array($dbhash, $user['user_id']);
-									$data = $db->query($pattern, $value);
+									$query = $db->query($pattern, $value);
 									
 									// ставим куки
 									setcookie ('cookie_user_id', $user['user_id'], time()+60*60*24*30, '/');
