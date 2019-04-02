@@ -34,20 +34,16 @@ if (isset($page)) {
 				<? endif; ?>
 			</div>
 			
-	<? if (isset($form)): ?>
-		<? if (isset($input_hidden_activation_code)): ?>
-			<input type="hidden" name="activation_code" value="<?= htmlspecialchars($user_activation_code) ?>" />
+	<? if (isset($form)): ?>		
+		<? if (isset($refregcode)): ?>
+			<input type="hidden" name="refregcode" value="<?= htmlspecialchars($refregcode) ?>" />
 		<? endif; ?>
 		
-		<? if (isset($_GET['ref'])): ?>
-			<input type="hidden" name="refreg_code" value="<?= htmlspecialchars($_GET['ref']) ?>" />
-		<? endif; ?>
-		
-		<? if (isset($input_hidden_passwordreset_code)): ?>
+		<? if (isset($hidden_passwordreset_code)): ?>
 			<input type="hidden" name="passwordreset_code" value="<?= htmlspecialchars($hidden_passwordreset_code) ?>" />
 		<? endif; ?>
 		
-		<? if (isset($input_hidden_email)): ?>
+		<? if (isset($hidden_email)): ?>
 			<input type="hidden" name="email" value="<?= htmlspecialchars($hidden_email) ?>" />
 		<? endif; ?>
 		
@@ -72,8 +68,8 @@ if (isset($page)) {
 		<? if (isset($input_invite)): ?>
 			<p>
 				<input name="invite" required="required" type="text" class="login_form_input" placeholder="<?= $input_invitecode_placeholder ?>"
-			<? if (isset($_GET['invite'])): ?>
-				 value="<?= $_GET['invite'] ?>"
+			<? if (isset($invitecode)): ?>
+				 value="<?= $invitecode ?>"
 			<? endif; ?>
 				>
 			</p>

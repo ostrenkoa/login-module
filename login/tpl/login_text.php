@@ -27,14 +27,7 @@ if (isset($page)) {
 		$description = '';
 		$h1 = $langpack['loginform_h1'];
 
-		if (!isset($error)) {
-			// форма логина без ошибок
-		
-			$h2 = $langpack['loginform_h2'];
-
-			($config['user_email_passwordreset']) ? $footer_text = $langpack['loginform_text'] : $footer_text = $langpack['loginform_text_no_resetpassword'];
-
-		} else if ($error AND $error === 'password') {
+	   if ($error AND $error === 'password') {
 			// неправильный пароль
 		
 			$h2 = $langpack['loginform_passwordincorrect_h2'];
@@ -46,7 +39,15 @@ if (isset($page)) {
 		
 			$h2 = $langpack['loginform_loginincorrect_h2'];
 			$footer_text = $langpack['loginform_loginincorrect_text'];
-		}
+
+		} else {
+            // форма логина без ошибок
+        
+            $h2 = $langpack['loginform_h2'];
+
+            ($config['user_email_passwordreset']) ? $footer_text = $langpack['loginform_text'] : $footer_text = $langpack['loginform_text_no_resetpassword'];
+
+        }
 
 		$input_email_placeholder = $langpack['loginform_email_placeholder'];
 		$input_password_placeholder = $langpack['loginform_password_placeholder'];
