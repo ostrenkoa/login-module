@@ -12,46 +12,38 @@ $page = array(
 
 // подключаем основной файл конфигурации
 $g_root = $_SERVER['DOCUMENT_ROOT'];
-include_once ($g_root.'/config.php');
+require_once ($g_root.'/config.php');
 
 // вызываем файл аутентификации пользователя
 include_once ($config['base_include_url'].$config['url_UAC_file']);
 
-if (!$user_login)
-// если пользователь не залогинен - работаем дальше
-{
-	// проверка возможности сброса пароля через почту
-	if ($config['user_email_passwordreset'] == true)
-	// если можно - работаем дальше
-	{
-		// ПРОВЕРКА ОТПРАВКИ ФОРМЫ
-		if (!isset($_POST['submit']))
-		// если форма не отправлялась - показываем форму
-		{
+if (!$user_login) {
+	// если пользователь не залогинен
+
+	if ($config['user_email_passwordreset']) {
+		// если возможность сброса пароля через почту активна
+	
+		if (!isset($_POST['submit'])) {
+			// если форма не отправлялась - показываем форму
+
 			// задаём свойства формы
-			$form = '1';								// фома активна
-			$form_action = 'resetpassword.php';			// адрес отправки формы
-			$form_method = 'POST';						// метод отправки формы
-			$input_email = '1';							// поле e-mail
-			$btn = '1';									// кнопка
+			$form			= true;						// фома активна
+			$form_action	= 'resetpassword.php';		// адрес отправки формы
+			$form_method	= 'POST';					// метод отправки формы
+			$input_email	= true;						// поле e-mail
+			$btn			= true;						// кнопка
 			
-			// код ответа - форма сброса пароля
-			$result = 'passwordreset_form';
-		}
-		else
-		// если форма отправлялась - получаем данные
-		{
-			// проверка достаточности полученных данных
-			if (
-					isset($_POST['email'])
-				AND !empty($_POST['email'])
-			)
-			// если данные получены - обрабатываем
-			{
-				// проверяем e-mail на валидность по маске
-				if(preg_match($config['regex_email'], $_POST['email']))
-				// если e-mail проходит проверку
-				{
+			$result = 'passwordreset_form';	// код ответа - форма сброса пароля
+
+		} else {
+			// если форма отправлялась
+		
+			if (!empty($_POST['email'])) {
+				// если данных достаточно
+
+				if (preg_match($config['regex_email'], $_POST['email'])) {
+					// если e-mail проходит проверку по маске
+
 					// получаем из базы запись по e-mail
 					$pattern = '
 						SELECT
@@ -68,9 +60,9 @@ if (!$user_login)
 					$value = array($_POST['email']);
 					$user = $db->query($pattern, $value)->row();
 						
-					if(!empty($user))
-					// если есть учётка с таким e-mail
-					{
+					if (!empty($user)) {
+						// если есть учётка с таким e-mail
+
 						// генерируем код восстановления пароля
 						// id + хэш прошлого пароля + соль + email
 						// из-за использования хэша прошлого пароля, ссылка будет действительна только на одну смену пароля
@@ -89,36 +81,31 @@ if (!$user_login)
 						// отправляем письмо с кодом сброса
 						Send_Mail ($to, $subject, $body);
 
-						// код ответа - отправлено письмо со ссылкой на установку нового пароля
-						$result = 'passwordreset_true_code_send'; 
+						$result = 'passwordreset_true_code_send'; // код ответа - отправлено письмо со ссылкой на установку нового пароля
+
+					} else {
+						// если учётки с таким e-mail нет в базе
+
+						$result = 'passwordreset_email_not_found';	// код ответа - пользователь не найден
+
 					}
-					else
-					// если учётки с таким e-mail нет в базе
-					{
-						// код ответа - пользователь не найден
-						$result = 'passwordreset_email_not_found';
-					}
+				} else {
+					// если данный e-mail не проходит проверку
+				
+					$result = 'passwordreset_email_wrong';	// код ответа -  - некорректный e-mail
+
 				}
-				else
-				// если данный e-mail не проходит проверку
-				{
-					// код ответа -  - некорректный e-mail
-					$result = 'passwordreset_email_wrong';
-				}
-			}
-			else
-			// если нужные переменные не получены - даём ошибку
-			{
-				// код ответа - пустая форма
-				$result = 'login_form_empty';
+			} else {
+				// если нужные переменные не получены - даём ошибку
+			
+				$result = 'login_form_empty';	// код ответа - пустая форма
+
 			}
 		}
-	}
-	else
-	// если письма отправлять нельзя
-	{
-		// код ответа - восстановить пароль самостоятельно невозможно
-		$result = 'passwordreset_disable';
+	} else {
+		// если письма отправлять нельзя
+	
+		$result = 'passwordreset_disable';	// код ответа - восстановить пароль самостоятельно невозможно
 	}
 	
 	// подключаем текстовые данные для сборки ответа
@@ -126,11 +113,12 @@ if (!$user_login)
 	
 	// подключаем вёрстку для сборки ответа
 	include $config['base_include_url'].'/login/tpl/login_tpl.php';
-}
-else
-// если пользователь уже залогинен - перебрасываем на основную страницу
-{
+
+} else {
+	// если пользователь уже залогинен - отправляем пользователя на страницу контента
+
 	header ('Location: /'.$config['system_page']);
 	exit();
+
 }
 ?>

@@ -12,14 +12,14 @@ $page = array(
 
 // подключаем основной файл конфигурации
 $g_root = $_SERVER['DOCUMENT_ROOT'];
-include_once ($g_root.'/config.php');
+require_once ($g_root.'/config.php');
 
 // вызываем файл аутентификации пользователя
 include_once ($config['base_include_url'].$config['url_UAC_file']);
 
-if ($user_login)
-// если пользователь залогинен - разлогиниваем
-{
+if ($user_login) {
+	// если пользователь залогинен - разлогиниваем
+
 	// сбрасываем хеш в базе
 	$pattern = '
 		UPDATE

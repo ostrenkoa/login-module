@@ -1,10 +1,12 @@
 <?php
 function Send_Mail($to, $subject, $body)
 {
+	// получаем данные для подключения к серверу
 	global $mailconfig;
 
+	// вызываем библиотеку
 	require_once ($_SERVER['DOCUMENT_ROOT'].'/assets/libs/phpmailer/PHPMailerAutoload.php');
-	 
+
 	$results_messages = array();
 	 
 	$mail = new PHPMailer(true);
@@ -19,6 +21,8 @@ function Send_Mail($to, $subject, $body)
 		{
 			throw new phpmailerAppException("Email address " . $to . " is invalid -- aborting!");
 		}
+
+		// определяем параметры отправки
 		$mail->isSMTP();
 		$mail->SMTPDebug  = 0;
 		$mail->Host       = $mailconfig['smtphost'];
@@ -36,6 +40,7 @@ function Send_Mail($to, $subject, $body)
 
 		try
 		{
+			// отправляем письмо
 			$mail->send();
 		}
 		catch (phpmailerException $e)

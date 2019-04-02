@@ -12,86 +12,62 @@ $page = array(
 
 // подключаем основной файл конфигурации
 $g_root = $_SERVER['DOCUMENT_ROOT'];
-include_once ($g_root.'/config.php');
+require_once ($g_root.'/config.php');
 
 // вызываем файл аутентификации пользователя
 include_once ($config['base_include_url'].$config['url_UAC_file']);
 
-if (!$user_login)
-// если пользователь не залогинен - работаем дальше
-{
-	// проверка возможности новых регистраций
-	if ($config['new_registration_open'])
-	// если регистрация открыта
-	{
-		// проверка отправки формы
-		if (!isset($_POST['submit']))
-		// если форма не отправлялась - показываем форму
-		{
+if (!$user_login) {
+	// если пользователь не залогинен
+
+	if ($config['new_registration_open']) {
+		// если регистрация открыта
+	
+		if (empty($_POST)) {
+			// если форма не отправлялась - показываем форму
+
 			// задаём свойства формы для сборки из шаблона
-			$form = '1';							// фома активна
-			$form_action = 'register.php';			// адрес отправки формы
-			$form_method = 'POST';					// метод отправки формы
-			$input_email = '1';						// поле e-mail
-			$input_password = '1';					// поле пароль
-			$input_terms_checkbox = '1';			// чекбокс с соглашением
+			// реферальная ссылка и код приглашения, если были получены
+			(!empty($_GET['ref']))		? $refregcode 	= $_GET['ref']		: '';
+			(!empty($_GET['invite']))	? $invitecode 	= $_GET['invite']	: '';
 
-			if (isset($_GET['ref']))
-			{$refregcode = $_GET['ref'];}			// реферальная ссылка, если была получена в ссылке
-
-			if (isset($_GET['invite']))
-			{$invitecode = $_GET['invite'];}		// код приглашения, если был получен в ссылке
-
-			$btn = '1';								// кнопка
+			$form					= true;				// фома активна
+			$form_action			= 'register.php';	// адрес отправки формы
+			$form_method			= 'POST';			// метод отправки формы
+			$input_email			= true;				// поле e-mail
+			$input_password			= true;				// поле пароль
+			$input_terms_checkbox	= true;				// чекбокс с соглашением
+			$btn					= true;				// кнопка
 		
-			if ($config['new_registration_only_invite'] == true)
-			// если открыта регистрация только по инвайтам
-			{
-				$input_invite = '1';				// поле кода приглашения
-
-				// код ответа - форма регистрации с запросом кода приглашения
-				$result = 'register_form_only_invite';
-			}
-			else
-			{
-				// код ответа - форма регистрации без запроса кода приглашения
-				$result = 'register_form';
-			}
-		}
-		else if(isset($_POST['submit']))
-		// если форма отправлялась - обрабатываем данные
-		{
-			// проверка достаточности полученных данных
-			if (
-					!empty($_POST['email'])
-				AND !empty($_POST['password'])
-				AND isset($_POST['email'])
-				AND isset($_POST['password'])
-			)
-			// если данные получены
-			{
-				// получаем e-mail и пароль
-				$email = $_POST['email'];
-				$pass = $_POST['password'];
+			if (!$config['new_registration_only_invite']) {
+				// если открыта регистрация без инвайтов
 				
-				// проверяем наличие реферального кода
-				if(isset($_POST['refcode']))
-				{
-					$refcode = $_POST['refcode'];
-				}
-				else
-				{
-					$refcode = 0;
-				}
+				$result = 'register_form';	// код ответа - форма регистрации без запроса кода приглашения
 
-				// проверяем e-mail на валидность по маске
-				if (preg_match($config['regex_email'], $email))
-				// если e-mail проходит проверку
-				{
-					// проверяем статус требования инвайтов
-					if ($config['new_registration_only_invite'] == true)
-					// если открыта регистрация только по инвайтам
-					{
+			} else {
+				// если открыта регистрация только по инвайтам
+
+				$input_invite = true;				// поле кода приглашения				
+				$result = 'register_form_only_invite';	// код ответа - форма регистрации с запросом кода приглашения
+				
+			}
+		} else {
+			// если форма отправлялась - обрабатываем данные
+
+			if (!empty($_POST['email']) AND !empty($_POST['password'])) {
+				// если данных достаточно
+
+				// реферальная ссылка и код приглашения, если были получены
+				(!empty($_POST['refcode']))	? $refcode 	= $_POST['refcode']		: '';
+				(!empty($_POST['invite']))	? $invitecode 	= $_POST['invite']	: '';
+
+				if (preg_match($config['regex_email'], $_POST['email'])) {
+					// если e-mail проходит проверку по маске
+
+
+					if ($config['new_registration_only_invite']) {
+						// если открыта регистрация только по инвайтам
+
 						// проверяем наличие и активность инвайта
 						$pattern = '
 							SELECT
@@ -109,14 +85,14 @@ if (!$user_login)
 						$invitecode = $db->query($pattern, $value)->row();
 					}
 
-					if ($config['new_registration_only_invite'] == true AND empty($invitecode))
-					// если открыта регистрация только по инвайтам и мы не нашли такой код приглашения - даём ошибку
-					{
-						$result = 'register_invite_wrong'; 	// код ответа
-					}
-					else
-					// если требования инвайтов нет либо инвайт-код валиден, то работаем дальше
-					{
+					if ($config['new_registration_only_invite'] AND empty($invitecode)) {
+						// если открыта регистрация только по инвайтам и мы не нашли такой код приглашения
+
+						$result = 'register_invite_wrong'; 	// код ответа - неверный инвайт код
+
+					} else {
+						// если требования инвайтов нет либо инвайт-код валиден
+					
 						// проверяем e-mail на занятость
 						$pattern = '
 							SELECT
@@ -129,20 +105,20 @@ if (!$user_login)
 							LIMIT
 								1
 						';
-						$value = array($email);
+						$value = array($_POST['email']);
 						$data = $db->query($pattern, $value)->row();
 							
-						if (empty($data))
-						// если нет учётки с таким e-mail
-						{
+						if (empty($data)) {
+							// если нет учётки с таким e-mail
+
 							// генерируем код активации аккаунта
-							$activation_code = hash('sha256', $email.time()); // email + timestamp
+							$activation_code = hash('sha256', $_POST['email'].time());
 							
-							// генерируем индивидуальный реферальный код
+							// генерируем индивидуальный реферальный код из непохожих символов
 							function generateCode($length=8)
 							{
-								$chars = "abcdefghikmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-								$code = "";
+								$chars = 'abcdefghikmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+								$code = '';
 								$clen = strlen($chars) - 1;
 								while (strlen($code) < $length)
 								{
@@ -150,25 +126,27 @@ if (!$user_login)
 								}
 								return $code;
 							}
-							$refcode = generateCode();
+							$refcode = generateCode(8);
 							
 							// шифруем пароль с солью
-							$password = hash('sha512', hash('sha512', $pass).$config['salt'].$email);
+							$password = hash('sha512', hash('sha512', $_POST['password']).$config['salt'].$_POST['email']);
 							
 							// добавляем запись в базу
 							$set = array(
-								'user_email'			=> $email,
+								'user_email'			=> $_POST['email'],
 								'user_password'			=> $password,
 								'user_activation_code'	=> $activation_code,
 								'user_ref_code'			=> $refcode,
 								'user_state'			=> 1,
 								'user_regdate'			=> date("Y-m-d H:i:s"),
 								);
-							if (isset($refregcode))
-							{
-								$set['user_refreg_code']	= $refregcode;
-							}
-							
+
+							// если зарегистрировались по реферальной ссылке
+							($refregcode)	? $set['user_refreg_code'] = $refregcode : '';
+
+							// если активация по почте не требуется
+							(!$config['user_email_activation'])	? $set['user_activation_state'] = 1 : '';
+
 							$pattern = '
 								INSERT INTO
 									users 
@@ -178,10 +156,9 @@ if (!$user_login)
 							$value = array($set);
 							$newuser_id = $db->query($pattern, $value)->id();
 
-							// проверяем возможность регистрации без инвайта
-							if ($config['new_registration_only_invite'] == true)
-							// если открыта регистрация только по инвайтам
-							{
+							if ($config['new_registration_only_invite']) {
+								// если открыта регистрация только по инвайтам
+
 								// погашаем инвайт
 								$pattern = '
 									UPDATE
@@ -200,12 +177,11 @@ if (!$user_login)
 								$invite = $db->query($pattern, $value);
 							}
 							
-							// проверка обязательности активации аккаунта
-							if ($config['user_email_activation'] == true)
-							// если требуется активация - генерируем письмо с кодом активации
-							{
+							if ($config['user_email_activation']) {
+								// если требуется обязательная активация - генерируем письмо с кодом активации
+
 								// кому отправляем письмо
-								$to = $email;
+								$to = $_POST['email'];
 
 								// подключаем шаблон письма
 								include 'tpl/register_mail_tpl.php';
@@ -216,69 +192,48 @@ if (!$user_login)
 								// отправляем письмо с кодом активации
 								Send_Mail ($to, $subject, $body);
 
-								// код ответа - регистрация прошла успешно, отправлено письмо со ссылкой активации
-								$result = 'register_true_code_send'; 	
-							}
-							else
-							// если активация не требуется - активируем аккаунт сразу
-							{
-								// обновляем запись пользователя в базе
-								$pattern = '
-									UPDATE
-										users 
-									SET
-										users.user_activation_state = 1
-									WHERE
-										users.user_id = ?i
-									LIMIT
-										1
-								';
-								$value = array($newuser_id);
-								$useractivation = $db->query($pattern, $value);
+								$result = 'register_true_code_send'; 	// код ответа - требуется активация
 
-								// код ответа - регистрация прошла успешно, можно начать работу
-								$result = 'register_true';
+							} else {
+								// если активация не требуется
+
+								$result = 'register_true'; // код ответа - регистрация прошла успешно, можно начать работу
+
 							}
-						}
-						else
-						// если данный e-mail уже есть в базе
-						{
-							// проверяем статус активации аккаунта
-							if ($data['user_activation_state'] == 1)
-							// если уже активировн
-							{
-								// код ответа - e-mail уже занят, залогиньтесь или восстановите пароль если забыли
-								$result = 'register_email_busy_activation_ok';
-							}
-							else if ($data['user_activation_state'] == 0)
-							// если ещё не активирован
-							{
-								// код ответа - e-mail уже занят, требуется активация аккаунта
-								$result = 'register_email_busy_not_activation';
+						} else {
+							// если данный e-mail уже есть в базе
+
+							if ((int)$data['user_activation_state'] === 1) {
+								// если уже активировн
+
+								$result = 'register_email_busy_activation_ok'; // код ответа - e-mail уже занят, залогиньтесь или восстановите пароль если забыли
+
+							} else {
+								// если ещё не активирован
+								
+								$result = 'register_email_busy_not_activation'; // код ответа - e-mail уже занят, требуется активация аккаунта
+
 							}
 						}
 					}
+				} else {
+					// если данный e-mail не проходит проверку по маске
+				
+					$result = 'register_email_wrong';	// код ответа - некорректный e-mail
+
 				}
-				else
-				// если данный e-mail не проходит проверку по маске
-				{
-					// код ответа - некорректный e-mail
-					$result = 'register_email_wrong';
-				}
-			}
-			else
-			// если данных не поступило
-			{
-				// код ответа - пустая форма
-				$result = 'register_form_empty';
+			} else {
+				// если данных не поступило
+
+				$result = 'register_form_empty';	// код ответа - пустая форма
+
 			}
 		}
-	}
-	else
-	// если регистрация закрыта
-	{
-		// код ответа - регистрация временно закрыта
-		$result = 'registration_closed';
+	} else {
+		// если регистрация закрыта
+
+		$result = 'registration_closed';	// код ответа - регистрация временно закрыта
+
 	}
 
 	// подключаем текстовые данные для сборки ответа
@@ -286,10 +241,10 @@ if (!$user_login)
 	
 	// подключаем вёрстку для сборки ответа
 	include $config['base_include_url'].'/login/tpl/login_tpl.php';
-}
-else
-// если пользователь уже залогинен - перебрасываем на основную страницу
-{
+
+} else {
+	// если пользователь уже залогинен - отправляем пользователя на страницу контента
+
 	header ('Location: /'.$config['system_page']);
 	exit();
 }
