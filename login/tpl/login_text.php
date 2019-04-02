@@ -5,62 +5,45 @@
 //
 // ******************************************** //
 
-if (isset($page))
-// защита на прямой вызов файла, его нельзя вызвать если не передана переменная $page со свойствами страницы вызова.
-{
+if (isset($page)) {
+	// защита на прямой вызов файла, его нельзя вызвать если не передана переменная $page со свойствами страницы вызова.
+
 	// подключаем языковой файл. при необходимости можем реализовать мультиязычность через данную точку
 	// для этого лишь надо принимать переменную с названием языка и на её основе подключать нужный файл
-	include $config['base_include_url'].'/login/tpl/ru.php';
+	require_once $config['base_include_url'].'/login/tpl/ru.php';
 
-	if (!isset($result)) {$result = false;}
+	// если не приняли дополнительные переменные
+	($result) ? '' : $result = false;
 
 	// ####################################################
 	// ###			авторизация - login.php				###
 	// ####################################################
+	
+	if ($result === 'login_form') {
+		// форма авторизации, две ошибки авторизации - неправильны логин и неправильный пароль
 
-	// форма авторизации, две ошибки авторизации - неправильны логин и неправильный пароль
-	if ($result == 'login_form')
-	{
 		$title = $langpack['loginform_title'];
 		$keywords = '';
 		$description = '';
 		$h1 = $langpack['loginform_h1'];
 
-		if (!isset($error))
-		// форма логина без ошибок
-		{
+		if (!isset($error)) {
+			// форма логина без ошибок
+		
 			$h2 = $langpack['loginform_h2'];
 
-			if ($config['user_email_passwordreset'] == true)
-			// если можно - даём ссылку на восстановление пароля
-			{
-				$footer_text = $langpack['loginform_text'];
-			}
-			else
-			// если нет - текст без ссылки
-			{
-				$footer_text = $langpack['loginform_text_no_resetpassword'];
-			}
-		}
-		else if (isset($error) AND $error == 'password')
-		// неправильный пароль
-		{
+			($config['user_email_passwordreset']) ? $footer_text = $langpack['loginform_text'] : $footer_text = $langpack['loginform_text_no_resetpassword'];
+
+		} else if ($error AND $error === 'password') {
+			// неправильный пароль
+		
 			$h2 = $langpack['loginform_passwordincorrect_h2'];
 
-			if ($config['user_email_passwordreset'] == true)
-			// если можно - даём ссылку на восстановление пароля
-			{
-				$footer_text = $langpack['loginform_passwordincorrect_text'];
-			}
-			else
-			// если нет - отправляем в поддержку
-			{
-				$footer_text = $langpack['loginform_passwordincorrect_noreset_text'];
-			}
-		}
-		else if (isset($error) AND $error == 'email')
-		// неправильный логин
-		{
+			($config['user_email_passwordreset']) ? $footer_text = $langpack['loginform_passwordincorrect_text'] : $footer_text = $langpack['loginform_passwordincorrect_noreset_text'];
+
+		} else if ($error AND $error === 'email') {
+			// неправильный логин
+		
 			$h2 = $langpack['loginform_loginincorrect_h2'];
 			$footer_text = $langpack['loginform_loginincorrect_text'];
 		}
@@ -68,29 +51,26 @@ if (isset($page))
 		$input_email_placeholder = $langpack['loginform_email_placeholder'];
 		$input_password_placeholder = $langpack['loginform_password_placeholder'];
 		$btn_name = $langpack['loginform_button'];
-	}
 
-	// данные не заполнены
-	else if ($result == 'login_form_empty')
-	{
+	} else if ($result === 'login_form_empty') {
+		// данные не заполнены
+
 		$title = $langpack['loginform_empty_title'];
 		$h1 = $langpack['loginform_empty_h1'];
 		$h2 = $langpack['loginform_empty_h2'];
 		$footer_text = $langpack['loginform_empty_try_again_text'];
-	}
 
-	// указанный e-mail некорректен
-	else if ($result == 'login_email_wrong')
-	{
+	} else if ($result === 'login_email_wrong') {
+		// указанный e-mail некорректен
+
 		$title = $langpack['loginform_email_wrong_title'];
 		$h1 = $langpack['loginform_email_wrong_h1'];
 		$h2 = $langpack['loginform_email_wrong_h2'];
 		$footer_text = $langpack['loginform_email_wrong_text'];
-	}
 
-	// пользователь заблокирован
-	else if ($result == 'user_disable')
-	{
+	} else if ($result === 'user_disable') {
+		// пользователь заблокирован
+
 		$title = $langpack['user_disable_title'];
 		$h1 = $langpack['user_disable_h1'];
 		$h2 = $langpack['user_disable_h2'];
@@ -101,9 +81,9 @@ if (isset($page))
 	// ###			регистрация - register.php			###
 	// ####################################################
 
-	// форма регистрации
-	else if ($result == 'register_form' OR $result == 'register_form_only_invite')
-	{
+	else if ($result === 'register_form' OR $result === 'register_form_only_invite') {
+		// форма регистрации
+
 		$title = $langpack['registerform_title'];
 		$keywords = '';
 		$description = '';
@@ -118,78 +98,71 @@ if (isset($page))
 		
 		$btn_name = $langpack['registerform_button'];
 		
-		if ($result == 'register_form')
-		{
+		if ($result === 'register_form') {
 			$footer_text = $langpack['registerform_text'];
-		}
-		else if ($result == 'register_form_only_invite')
-		{
+		} else if ($result === 'register_form_only_invite') {
 			$footer_text = $langpack['registerform_text_only_invite'];
 		}
-	}
 
-	// регистрация закрыта
-	else if ($result == 'registration_closed')
-	{
+	} else if ($result === 'registration_closed') {
+
+		// регистрация закрыта
 		$title = $langpack['register_closed_title'];
 		$h1 = $langpack['register_closed_h1'];
 		$h2 = $langpack['register_closed_h2'];
 		$footer_text = $langpack['register_closed_text'];
-	}
 
-	// отправлена недозаполненная форма
-	else if ($result == 'register_form_empty')
-	{
+	} else if ($result === 'register_form_empty') {
+		// отправлена недозаполненная форма
+
 		$title = $langpack['register_form_empty_title'];
 		$h1 = $langpack['register_form_empty_h1'];
 		$h2 = $langpack['register_form_empty_h2'];
 		$footer_text = $langpack['register_form_empty_text'];
-	}
 
-	// указанный код приглашения некорректен
-	else if ($result == 'register_invite_wrong')
-	{
+	} else if ($result === 'register_invite_wrong') {
+		// указанный код приглашения некорректен
+
 		$title = $langpack['register_invite_wrong_title'];
 		$h1 = $langpack['register_invite_wrong_h1'];
 		$h2 = $langpack['register_invite_wrong_h2'];
 		$footer_text = $langpack['register_invite_wrong_text'];
-	}
 
-	// указанный e-mail некорректен
-	else if ($result == 'register_email_wrong')
-	{
+	} else if ($result === 'register_email_wrong') {
+		// указанный e-mail некорректен
+
 		$title = $langpack['register_email_wrong_title'];
 		$h1 = $langpack['register_email_wrong_h1'];
 		$h2 = $langpack['register_email_wrong_h2'];
 		$footer_text = $langpack['register_email_wrong_text'];
-	}
-	// указанный e-mail уже занят и аккаунт активирован
-	else if ($result == 'register_email_busy_activation_ok')
-	{
+
+	} else if ($result === 'register_email_busy_activation_ok') {
+		// указанный e-mail уже занят и аккаунт активирован
+
 		$title = $langpack['register_email_busy_activation_ok_title'];
 		$h1 = $langpack['register_email_busy_activation_ok_h1'];
 		$h2 = $langpack['register_email_busy_activation_ok_h2'];
 		$footer_text = $langpack['register_email_busy_activation_ok_text'];
-	}
-	// указанный e-mail уже занят, но аккаунт не активирован
-	else if ($result == 'register_email_busy_not_activation')
-	{
+
+	} else if ($result === 'register_email_busy_not_activation') {
+		// указанный e-mail уже занят, но аккаунт не активирован
+
 		$title = $langpack['register_email_busy_not_activation_title'];
 		$h1 = $langpack['register_email_busy_not_activation_h1'];
 		$h2 = $langpack['register_email_busy_not_activation_h2'];
 		$footer_text = $langpack['register_email_busy_not_activation_text'];
-	}
-	// успешная регистрация, код активации отправлен
-	else if ($result == 'register_true_code_send')
-	{
+
+	} else if ($result === 'register_true_code_send') {
+		// успешная регистрация, код активации отправлен
+
 		$title = $langpack['register_true_code_send_title'];
 		$h1 = $langpack['register_true_code_send_h1'];
 		$h2 = $langpack['register_true_code_send_h2'];
 		$footer_text = $langpack['register_true_code_send_text'];
-	}
-	// успешная регистрация, активация не требуется
-	else if ($result == 'register_true')
-	{
+
+	} else if ($result === 'register_true') {
+		// успешная регистрация, активация не требуется
+
 		$title = $langpack['register_true_title'];
 		$h1 = $langpack['register_true_h1'];
 		$h2 = $langpack['register_true_h2'];
@@ -200,9 +173,9 @@ if (isset($page))
 	// ###			активация - activation.php			###
 	// ####################################################
 
-	// форма активации
-	else if ($result == 'activation_form')
-	{
+	else if ($result === 'activation_form') {
+		// форма активации
+
 		$title = $langpack['activation_form_title'];
 		$keywords = '';
 		$description = '';
@@ -211,34 +184,34 @@ if (isset($page))
 		$input_activation_code_placeholder = $langpack['activation_form_code_placeholder'];
 		$btn_name = $langpack['activation_form_button'];
 		$footer_text = $langpack['activation_form_text'];
-	}
-	// ещё не ативирован
-	else if ($result == 'no_activation')
-	{
+
+	} else if ($result === 'no_activation') {
+		// ещё не ативирован
+
 		$title = $langpack['no_activation_title'];
 		$h1 = $langpack['no_activation_h1'];
 		$h2 = $langpack['no_activation_h2'];
 		$footer_text = $langpack['no_activation_text'];
-	}
-	// успешная активация
-	else if ($result == 'activation_true')
-	{
+
+	} else if ($result === 'activation_true') {
+		// успешная активация
+
 		$title = $langpack['activation_true_title'];
 		$h1 = $langpack['activation_true_h1'];
 		$h2 = $langpack['activation_true_h2'];
 		$footer_text = $langpack['activation_true_text'];
-	}
-	// уже активирован
-	else if ($result == 'activation_already')
-	{
+
+	} else if ($result === 'activation_already') {
+		// уже активирован
+
 		$title = $langpack['activation_already_title'];
 		$h1 = $langpack['activation_already_h1'];
 		$h2 = $langpack['activation_already_h2'];
-		$footer_text = $langpack['activation_already_text'];;
-	}
-	// неверные данные для активации
-	else if ($result == 'activation_wrong')
-	{
+		$footer_text = $langpack['activation_already_text'];
+
+	} else if ($result === 'activation_wrong') {
+		// неверные данные для активации
+
 		$title = $langpack['activation_wrong_title'];
 		$h1 = $langpack['activation_wrong_h1'];
 		$h2 = $langpack['activation_wrong_h2'];
@@ -249,9 +222,9 @@ if (isset($page))
 	// ###		сброс пароля - resetpassword.php		###
 	// ####################################################
 
-	// форма сброса пароля
-	else if ($result == 'passwordreset_form')
-	{
+	else if ($result === 'passwordreset_form') {
+		// форма сброса пароля
+
 		$title = $langpack['passwordreset_form_title'];
 		$keywords = '';
 		$description = '';
@@ -260,43 +233,42 @@ if (isset($page))
 		$input_email_placeholder = $langpack['passwordreset_form_email_placeholder'];
 		$btn_name = $langpack['passwordreset_form_button'];
 		$footer_text = $langpack['passwordreset_form_text'];
-	}
-	// успешно - письмо с инструкциями отправлено
-	else if ($result == 'passwordreset_true_code_send')
-	{
+
+	} else if ($result === 'passwordreset_true_code_send') {
+		// успешно - письмо с инструкциями отправлено
+
 		$title = $langpack['passwordreset_true_code_send_title'];
 		$h1 = $langpack['passwordreset_true_code_send_h1'];
 		$h2 = $langpack['passwordreset_true_code_send_h2'];
 		$footer_text = $langpack['passwordreset_true_code_send_text'];
-	}
-	// ошибка - возможность отправки писем отключена
-	else if ($result == 'passwordreset_disable')
-	{
+
+	} else if ($result === 'passwordreset_disable') {
+		// ошибка - возможность отправки писем отключена
+
 		$title = $langpack['passwordreset_disable_title'];
 		$h1 = $langpack['passwordreset_disable_h1'];
 		$h2 = $langpack['passwordreset_disable_h2'];
 		$footer_text = $langpack['passwordreset_disable_text'];
-	}
-	// ошибка - подходящего пользователя не нашли
-	else if ($result == 'passwordreset_email_not_found')
-	{
+
+	} else if ($result === 'passwordreset_email_not_found') {
+		// ошибка - подходящего пользователя не нашли
+
 		$title = $langpack['passwordreset_email_not_found_title'];
 		$h1 = $langpack['passwordreset_email_not_found_h1'];
 		$h2 = $langpack['passwordreset_email_not_found_h2'];
 		$footer_text = $langpack['passwordreset_email_not_found_text'];
-	}
-	// ошибка - указанный email некорректен
-	else if ($result == 'passwordreset_email_wrong')
-	{
+
+	} else if ($result === 'passwordreset_email_wrong') {
+		// ошибка - указанный email некорректен
+
 		$title = $langpack['passwordreset_email_wrong_title'];
 		$h1 = $langpack['passwordreset_email_wrong_h1'];
 		$h2 = $langpack['passwordreset_email_wrong_h2'];
 		$footer_text = $langpack['passwordreset_email_wrong_text'];
-	}
 
-	// форма установки нового пароля
-	else if ($result == 'newpassword_form')
-	{
+	} else if ($result === 'newpassword_form') {
+		// форма установки нового пароля
+
 		$title = $langpack['newpassword_form_title'];
 		$keywords = "";
 		$description = "";
@@ -305,26 +277,26 @@ if (isset($page))
 		$input_password_placeholder = $langpack['newpassword_form_password_placeholder'];
 		$btn_name = $langpack['newpassword_form_button'];
 		$footer_text = $langpack['newpassword_form_text'];
-	}
-	// пароль успешно установлен
-	else if ($result == 'newpassword_true')
-	{
+
+	} else if ($result === 'newpassword_true') {
+		// пароль успешно установлен
+
 		$title = $langpack['newpassword_true_title'];
 		$h1 = $langpack['newpassword_true_h1'];
 		$h2 = $langpack['newpassword_true_h2'];
 		$footer_text = $langpack['newpassword_true_text'];
-	}
-	// код восстановления не совпадает
-	else if ($result == 'newpassword_code_wrong')
-	{
+
+	} else if ($result === 'newpassword_code_wrong') {
+		// код восстановления не совпадает
+
 		$title = $langpack['newpassword_code_wrong_title'];
 		$h1 = $langpack['newpassword_code_wrong_h1'];
 		$h2 = $langpack['newpassword_code_wrong_h2'];
 		$footer_text = $langpack['newpassword_code_wrong_text'];
-	}
-	// учётки с таким e-mail нет в базе
-	else if ($result == 'newpassword_email_wrong')
-	{
+
+	} else if ($result === 'newpassword_email_wrong') {
+		// учётки с таким e-mail нет в базе
+
 		$title = $langpack['newpassword_email_wrong_title'];
 		$h1 = $langpack['newpassword_email_wrong_h1'];
 		$h2 = $langpack['newpassword_email_wrong_h2'];
@@ -332,22 +304,22 @@ if (isset($page))
 	}
 
 	// ####################################################
-	// ###		сервисные сообщения - message.php		###
+	// ###		сервисные сообщения						###
 	// ####################################################
 
-	// сервисный режим системы
-	else if ($result == "system_offline")
-	{
+	else if ($result === 'system_offline') {
+		// сервисный режим системы
+
 		$title = $langpack['service_mode_form_title'];
-		$keywords = "";
-		$description = "";
+		$keywords = '';
+		$description = '';
 		$h1 = $langpack['service_mode_form_h1'];
 		$h2 = $langpack['service_mode_form_h2'];
 		$footer_text = $langpack['service_mode_form_text'];
 	}
-}
-else
-{
+
+} else {
+
 	header('Location: /404.php'); exit();
 }
 ?>

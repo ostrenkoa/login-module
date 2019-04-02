@@ -5,9 +5,9 @@
 //
 // ******************************************** //
 
-if (isset($page))
-// защита на прямой вызов файла, его нельзя вызвать если не передана переменная $page со свойствами страницы вызова.
-{
+if (isset($page)) {
+	// защита на прямой вызов файла, его нельзя вызвать если не передана переменная $page со свойствами страницы вызова.
+
 ?>
 <html>
 	<head>
@@ -19,7 +19,7 @@ if (isset($page))
 	<body>
 		<div class="login_ext">
 			<div class="login_int container">
-	<? if (isset($form) AND $form == '1'): ?>
+	<? if (isset($form)): ?>
 		<form class="login_form" action="<?= $form_action ?>" method="<?= $form_method ?>">
 	<? else: ?>
 		<div class="login_form">
@@ -34,8 +34,8 @@ if (isset($page))
 				<? endif; ?>
 			</div>
 			
-	<? if (isset($form) AND $form == '1'): ?>
-		<? if (isset($input_hidden_activation_code) AND $input_hidden_activation_code == '1'): ?>
+	<? if (isset($form)): ?>
+		<? if (isset($input_hidden_activation_code)): ?>
 			<input type="hidden" name="activation_code" value="<?= htmlspecialchars($user_activation_code) ?>" />
 		<? endif; ?>
 		
@@ -43,33 +43,33 @@ if (isset($page))
 			<input type="hidden" name="refreg_code" value="<?= htmlspecialchars($_GET['ref']) ?>" />
 		<? endif; ?>
 		
-		<? if (isset($input_hidden_passwordreset_code) AND $input_hidden_passwordreset_code == '1'): ?>
+		<? if (isset($input_hidden_passwordreset_code)): ?>
 			<input type="hidden" name="passwordreset_code" value="<?= htmlspecialchars($hidden_passwordreset_code) ?>" />
 		<? endif; ?>
 		
-		<? if (isset($input_hidden_email) AND $input_hidden_email == '1'): ?>
+		<? if (isset($input_hidden_email)): ?>
 			<input type="hidden" name="email" value="<?= htmlspecialchars($hidden_email) ?>" />
 		<? endif; ?>
 		
-		<? if (isset($input_activation_code) AND $input_activation_code == '1'): ?>
+		<? if (isset($input_activation_code)): ?>
 			<p>
 				<input name="activation_code" required="required" type="text" class="login_form_input" placeholder="<?= $input_activation_code_placeholder ?>">
 			</p>
 		<? endif; ?>
 		
-		<? if (isset($input_email) AND $input_email == '1'): ?>
+		<? if (isset($input_email)): ?>
 			<p>
 				<input name="email" required="required" type="text" class="login_form_input" <? if (isset($input_email_value)): ?>value="<?= htmlspecialchars($input_email_value) ?>" <? endif; ?>placeholder="<?= $input_email_placeholder ?>">
 			</p>
 		<? endif; ?>
 
-		<? if (isset($input_password) AND $input_password == '1'): ?>
+		<? if (isset($input_password)): ?>
 			<p>
 				<input name="password" required="required" type="password" class="login_form_input" placeholder="<?= $input_password_placeholder ?>">
 			</p>
 		<? endif; ?>
 
-		<? if (isset($input_invite) AND $input_invite == '1'): ?>
+		<? if (isset($input_invite)): ?>
 			<p>
 				<input name="invite" required="required" type="text" class="login_form_input" placeholder="<?= $input_invitecode_placeholder ?>"
 			<? if (isset($_GET['invite'])): ?>
@@ -79,7 +79,7 @@ if (isset($page))
 			</p>
 		<? endif; ?>
 		
-		<? if (isset($input_terms_checkbox) AND $input_terms_checkbox == '1'): ?>
+		<? if (isset($input_terms_checkbox)): ?>
 			<p>
 				<label class="login_form_checkbox"><input type="checkbox" class="login_form_checkbox" name="terms" value="terms" required="required" placeholder="<?= $terms_checkbox_placeholder ?>" /> <?= $terms_checkbox_text ?></label>
 			</p>
@@ -93,12 +93,12 @@ if (isset($page))
 	<? endif; ?>
 
 		<div class="footer">
-			<? if(isset($footer_text)): ?>
+			<? if (isset($footer_text)): ?>
 			<p><?= $footer_text ?></p>
 			<? endif; ?>
 		</div>
 			
-	<? if (isset($form) AND $form == '1'): ?>
+	<? if (isset($form)): ?>
 	</form>
 	<? else: ?>
 	</div>
