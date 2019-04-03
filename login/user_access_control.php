@@ -82,5 +82,6 @@ if (isset($page)) {
 
 	header('Location: /404.php'); // отправляем в 404
 	exit();
+	
 }
 ?>

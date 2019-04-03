@@ -53,17 +53,6 @@ function Send_Mail($to, $subject, $body)
 	{
 		$results_messages[] = $e->errorMessage();
 	}
-	 
-	if (count($results_messages) > 0)
-	{
-		echo "<h2>Run results</h2>\n";
-		echo "<ul>\n";
-		foreach ($results_messages as $result)
-		{
-			echo "<li>$result</li>\n";
-		}
-		echo "</ul>\n";
-	}
 }
 
 ?>

@@ -33,11 +33,12 @@ if ($user_login) {
 		';
 	$value = array($userconfig['user_id']);
 	$data = $db->query($pattern, $value);
-}
 
-// обнуляем куки
-setcookie ('cookie_user_id', '', time() - 3600*24*30*12, '/');
-setcookie ('cookie_hash', '', time() - 3600*24*30*12, '/');
+    // обнуляем куки
+    setcookie ('cookie_user_id', '', time() - 3600*24*30*12, '/');
+    setcookie ('cookie_hash', '', time() - 3600*24*30*12, '/');
+
+}
 
 // отправляем на форму логина
 header ('Location: /login/login.php');
