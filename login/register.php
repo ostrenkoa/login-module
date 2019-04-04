@@ -43,8 +43,8 @@ if (!$user_login) {
 			$form					= true;				// фома активна
 			$form_action			= 'register.php';	// адрес отправки формы
 			$form_method			= 'POST';			// метод отправки формы
-			$refregcode		=  $_GET['ref'] ?: '';		// реферальная ссылка
-			$invitecode		=  $_GET['invite'] ?: '';	// код приглашения
+			(!empty($_GET['ref'])) ? $refregcode	=  $_GET['ref'] 	: '';	// реферальная ссылка
+			(!empty($_GET['invite'])) ? $invitecode	=  $_GET['invite']	: '';	// код приглашения
 			$input_email			= true;				// поле e-mail
 			$input_password			= true;				// поле пароль
 			$input_terms_checkbox	= true;				// чекбокс с соглашением
@@ -136,9 +136,9 @@ if (!$user_login) {
 								'user_regdate'			=> date("Y-m-d H:i:s"),
 								);
 
-							$set['user_refreg_code']	=  $_POST['refregcode'] ?: '';	// если зарегистрировались по реферальной ссылке
+							(!empty($_POST['refregcode'])) ? $set['user_refreg_code']	=  $_POST['refregcode'] : '';	// если зарегистрировались по реферальной ссылке
 
-							(!$config['user_email_activation'])	? $set['user_activation_state'] = 1 : ''; // если активация по почте не требуется
+							(!$config['user_email_activation']) ? $set['user_activation_state'] = 1 : '';	// если активация по почте не требуется
 
 							$pattern = '
 								INSERT INTO

@@ -28,8 +28,8 @@ if (!$user_login) {
 		$form								= true;								// фома активна
 		$form_action						= 'newpassword.php';				// адрес отправки формы
 		$form_method						= 'POST';							// метод отправки формы
-		$hidden_email				=  $_GET['email'] 				?: '';		// e-mail из ссылки
-		$hidden_passwordreset_code	=  $_GET['passwordreset_code']	?: '';		// код сброса из ссылки
+		(!empty($_GET['email'])) ? $hidden_email	=  $_GET['email'] 	: '';	// e-mail из ссылки
+		(!empty($_GET['passwordreset_code'])) ? $hidden_passwordreset_code	=  $_GET['passwordreset_code'] 	: '';	// код сброса из ссылки
 		$input_password						= true;								// поле пароль
 		$btn								= true;								// кнопка
 		
