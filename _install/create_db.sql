@@ -1,13 +1,4 @@
 --
--- База данных: `login`
---
-CREATE DATABASE IF NOT EXISTS `login` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-
-USE `login`;
-
--- --------------------------------------------------------
-
---
 -- Структура таблицы `users`
 --
 
