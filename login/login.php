@@ -36,8 +36,8 @@ if (!$user_login) {
 		// если форма логина не отправлялась либо вернулась с GET ошибкой - показываем форму
 
 		// задаём свойства формы для сборки из шаблона
-		$input_email_value	=  $_GET['login'] ?: '';	// ранее введённый e-mail
-		$error				=  $_GET['error'] ?: '';	// тип ошибки
+		(!empty($_GET['login'])) ? $input_email_value	=  $_GET['login'] : '';	// ранее введённый e-mail
+		(!empty($_GET['error'])) ? $error				=  $_GET['error'] : '';	// тип ошибки
 		$form 				= true;						// форма активна
 		$form_action 		= 'login.php';				// адрес отправки формы
 		$form_method 		= 'POST';					// метод отправки формы
