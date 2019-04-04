@@ -13,10 +13,10 @@ $params = array(
 'host'     => 'localhost',
 
 // название базы данных
-'dbname'   => 'login',
+'dbname'   => '',
 
 // имя пользователя
-'username' => 'root',
+'username' => '',
 
 // пароль
 'password' => '',
@@ -92,7 +92,7 @@ $config = array(
 'salt'							=> 'login_module',
 
 // страница сайта, на котору должен попадать пользователь после успешного логина
-'system_page'					=> '/index.php',
+'system_page'					=> 'index.php',
 
 // страница с условиями использования сайта, ссылка на неё будет показываться при регистрации
 'terms_page'					=> '/terms.php',
