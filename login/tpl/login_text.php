@@ -27,26 +27,27 @@ if (isset($page)) {
 		$description = '';
 		$h1 = $langpack['loginform_h1'];
 
-	   if ($error AND $error === 'password') {
-			// неправильный пароль
-		
-			$h2 = $langpack['loginform_passwordincorrect_h2'];
-
-			($config['user_email_passwordreset']) ? $footer_text = $langpack['loginform_passwordincorrect_text'] : $footer_text = $langpack['loginform_passwordincorrect_noreset_text'];
-
-		} else if ($error AND $error === 'email') {
-			// неправильный логин
-		
-			$h2 = $langpack['loginform_loginincorrect_h2'];
-			$footer_text = $langpack['loginform_loginincorrect_text'];
-
-		} else {
+	   if (empty($error)) {
             // форма логина без ошибок
         
             $h2 = $langpack['loginform_h2'];
 
             ($config['user_email_passwordreset']) ? $footer_text = $langpack['loginform_text'] : $footer_text = $langpack['loginform_text_no_resetpassword'];
 
+		} else {
+	   		if ($error === 'password') {
+				// неправильный пароль
+		
+				$h2 = $langpack['loginform_passwordincorrect_h2'];
+
+				($config['user_email_passwordreset']) ? $footer_text = $langpack['loginform_passwordincorrect_text'] : $footer_text = $langpack['loginform_passwordincorrect_noreset_text'];
+
+			} else if ($error AND $error === 'email') {
+				// неправильный логин
+		
+				$h2 = $langpack['loginform_loginincorrect_h2'];
+				$footer_text = $langpack['loginform_loginincorrect_text'];
+			}
         }
 
 		$input_email_placeholder = $langpack['loginform_email_placeholder'];
